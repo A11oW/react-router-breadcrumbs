@@ -192,6 +192,30 @@ describe('Breadcrumbs', () => {
             expect(res[2].type.displayName).to.equal('Link');
         });
 
+        it('should ignore routes without path', () => {
+            const RouteWithEmptyPath = {
+                ...defaultRoute,
+                path: undefined
+            };
+
+            const res = Func.renderCrumbs({
+                ...defaultProps,
+                routes: [
+                    { ...RouteWithEmptyPath },
+                    { ...defaultRoute },
+                    { ...RouteWithEmptyPath },
+                    { ...defaultRoute },
+                    { ...RouteWithEmptyPath }
+                ],
+                hideNoPath: true
+            });
+
+            expect(res.length).to.equal(3); // Link - Separator - Link
+            expect(res[0].type.displayName).to.equal('Link');
+            expect(res[1].type).to.equal('span');
+            expect(res[2].type.displayName).to.equal('Link');
+        });
+
         it('should append prefixElement to the front, and allow for React.element as prop', () => {
             const res = Func.renderCrumbs({
                 ...defaultProps,

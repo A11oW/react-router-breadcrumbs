@@ -94,8 +94,11 @@ var renderCrumbs = exports.renderCrumbs = function renderCrumbs(_ref2) {
     var params = _ref2.params;
     var createLink = _ref2.createLink;
     var resolver = _ref2.resolver;
+    var hideNoPath = _ref2.hideNoPath;
 
-    var crumbs = (0, _utils.on)(routes).filter((0, _utils.not)((0, _utils.where)((0, _utils.pluck)('breadcrumbIgnore'), (0, _utils.isEqualTo)(true)))).map(toCrumb({ params: params, createLink: createLink, resolver: resolver })).reduce((0, _utils.join)(createSeparator), []);
+    var crumbs = (0, _utils.on)(routes).filter((0, _utils.not)((0, _utils.where)((0, _utils.pluck)('breadcrumbIgnore'), (0, _utils.isEqualTo)(true)))).filter(function (route) {
+        return hideNoPath ? (0, _utils.pluck)('path')(route) : true;
+    }).map(toCrumb({ params: params, createLink: createLink, resolver: resolver })).reduce((0, _utils.join)(createSeparator), []);
 
     return (0, _utils.on)(prefixElements).concat(crumbs).concat((0, _utils.on)(suffixElements));
 };
@@ -118,7 +121,8 @@ Breadcrumbs.defaultProps = {
     createLink: defaultLink,
     createSeparator: defaultSeparator,
     prefixElements: [],
-    suffixElements: []
+    suffixElements: [],
+    hideNoPath: false
 };
 
 Breadcrumbs.propTypes = {
@@ -130,7 +134,8 @@ Breadcrumbs.propTypes = {
     className: _react.PropTypes.string,
     wrappingComponent: _react.PropTypes.string,
     prefixElements: _react.PropTypes.oneOfType([_react.PropTypes.arrayOf(_react.PropTypes.element), _react.PropTypes.element]),
-    suffixElements: _react.PropTypes.oneOfType([_react.PropTypes.arrayOf(_react.PropTypes.element), _react.PropTypes.element])
+    suffixElements: _react.PropTypes.oneOfType([_react.PropTypes.arrayOf(_react.PropTypes.element), _react.PropTypes.element]),
+    hideNoPath: _react.PropTypes.bool
 };
 
 exports.default = Breadcrumbs;

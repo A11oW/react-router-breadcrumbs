@@ -48,10 +48,12 @@ export const renderCrumbs = ({
     suffixElements,
     params,
     createLink,
-    resolver
+    resolver,
+    hideNoPath
     }) => {
     const crumbs = on(routes)
         .filter(not(where(pluck('breadcrumbIgnore'), isEqualTo(true))))
+        .filter((route) => hideNoPath ? pluck('path')(route) : true)
         .map(toCrumb({ params, createLink, resolver }))
         .reduce(join(createSeparator), []);
 
@@ -71,7 +73,8 @@ Breadcrumbs.defaultProps = {
     createLink: defaultLink,
     createSeparator: defaultSeparator,
     prefixElements: [],
-    suffixElements: []
+    suffixElements: [],
+    hideNoPath: false
 };
 
 Breadcrumbs.propTypes = {
@@ -83,7 +86,8 @@ Breadcrumbs.propTypes = {
     className: PT.string,
     wrappingComponent: PT.string,
     prefixElements: PT.oneOfType([PT.arrayOf(PT.element), PT.element]),
-    suffixElements: PT.oneOfType([PT.arrayOf(PT.element), PT.element])
+    suffixElements: PT.oneOfType([PT.arrayOf(PT.element), PT.element]),
+    hideNoPath: PT.bool
 };
 
 export default Breadcrumbs;
